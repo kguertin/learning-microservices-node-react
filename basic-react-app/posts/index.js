@@ -15,17 +15,21 @@ app.get('/posts', (req, res) => {
 });
 
 app.post('/posts', async (req, res) => {
-  const id = randomBytes(4).toString('hex');
-  const { title } = req.body;
+  try {
+    const id = randomBytes(4).toString('hex');
+    const { title } = req.body;
 
-  posts[id] = { id, title };
+    posts[id] = { id, title };
 
-  await axios.post('http://localhost:4005/events', {
-    type: 'postCreated',
-    data: { id, title },
-  });
+    await axios.post('http://localhost:4005/events', {
+      type: 'postCreated',
+      data: { id, title },
+    });
 
-  res.status(201).send(posts[id]);
+    res.status(201).send(posts[id]);
+  } catch (e) {
+    console.log(e);
+  }
 });
 
 app.post('/events', (req, res) => {
